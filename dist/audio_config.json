@@ -1,0 +1,21 @@
+{
+    "presets": {
+        "Normal": {
+            "gain": 1.0,
+            "distortion": 1.0,
+            "clipping": 1.0
+        },
+        "Boost": {
+            "gain": 5.0,
+            "distortion": 20.0,
+            "clipping": 0.5
+        },
+        "Extreme": {
+            "gain": 10.0,
+            "distortion": 35.0,
+            "clipping": 0.3
+        }
+    },
+    "night_mode": false,
+    "last_preset": "Normal"
+}
