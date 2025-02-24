@@ -80,7 +80,9 @@ class AudioProcessor:
 
 class AudioEffectGUI:
     def __init__(self):
+        # JSON dosyaları aynı klasörde saklanıyor.
         self.config_file = "audio_config.json"
+        self.device_file = "device_selection.json"
         self.load_config()
         self.profile_settings = self.config.get("presets", {
             "Normal": {"gain": 1.0, "distortion": 1.0, "clipping": 1.0},
@@ -101,9 +103,10 @@ class AudioEffectGUI:
             print("Icon yüklenemedi:", e)
 
         self.processor = AudioProcessor()
-        self.toggle_key = "F6"  # Efekt için dilersen değiştirebilirsin
+        self.toggle_key = "F6"  # Efekt için
 
         self.setup_ui()
+        self.load_device_selection()
         self.setup_hotkey()
         self.update_volume_meter()
 
@@ -116,11 +119,12 @@ class AudioEffectGUI:
 
     def load_config(self):
         if os.path.exists(self.config_file):
-            with open(self.config_file, "r") as f:
-                try:
+            try:
+                with open(self.config_file, "r") as f:
                     self.config = json.load(f)
-                except:
-                    self.config = {}
+            except Exception as e:
+                print(f"Config dosyası hatası: {e}")
+                self.config = {}
         else:
             self.config = {}
 
@@ -131,8 +135,37 @@ class AudioEffectGUI:
         with open(self.config_file, "w") as f:
             json.dump(self.config, f, indent=4)
 
+    def load_device_selection(self):
+        if os.path.exists(self.device_file):
+            try:
+                with open(self.device_file, "r") as f:
+                    device_config = json.load(f)
+                    input_device = device_config.get("input_device", "")
+                    output_device = device_config.get("output_device", "")
+                    input_list = self.processor.get_device_list('input')
+                    output_list = self.processor.get_device_list('output')
+                    if input_device in input_list:
+                        self.input_device_var.set(input_device)
+                    elif input_list:
+                        self.input_device_var.set(input_list[0])
+                    if output_device in output_list:
+                        self.output_device_var.set(output_device)
+                    elif output_list:
+                        self.output_device_var.set(output_list[0])
+            except Exception as e:
+                print(f"Cihaz seçim yükleme hatası: {e}")
+
+    def save_device_selection(self):
+        device_config = {
+            "input_device": self.input_device_var.get(),
+            "output_device": self.output_device_var.get()
+        }
+        with open(self.device_file, "w") as f:
+            json.dump(device_config, f, indent=4)
+
     def on_closing(self):
         self.save_config()
+        self.save_device_selection()
         self.processor.cleanup()
         self.root.destroy()
 
@@ -196,13 +229,20 @@ class AudioEffectGUI:
         ttk.Label(device_frame, text="Mikrofon:").pack(pady=2)
         self.input_device_var = tk.StringVar()
         self.input_device_combo = ttk.Combobox(device_frame, textvariable=self.input_device_var, state="readonly")
-        self.input_device_combo['values'] = self.processor.get_device_list('input')
+        input_devices = self.processor.get_device_list('input')
+        self.input_device_combo['values'] = input_devices
         self.input_device_combo.pack(padx=5, pady=5, fill="x")
+        if not self.input_device_var.get() and input_devices:
+            self.input_device_var.set(input_devices[0])
+
         ttk.Label(device_frame, text="Çıkış:").pack(pady=2)
         self.output_device_var = tk.StringVar()
         self.output_device_combo = ttk.Combobox(device_frame, textvariable=self.output_device_var, state="readonly")
-        self.output_device_combo['values'] = self.processor.get_device_list('output')
+        output_devices = self.processor.get_device_list('output')
+        self.output_device_combo['values'] = output_devices
         self.output_device_combo.pack(padx=5, pady=5, fill="x")
+        if not self.output_device_var.get() and output_devices:
+            self.output_device_var.set(output_devices[0])
 
         # Profil Seçimi
         profile_frame = ttk.Labelframe(main_frame, text="Profil Seçimi")
@@ -271,22 +311,19 @@ class AudioEffectGUI:
     def show_info(self):
         info_win = ttk.Toplevel(self.root)
         info_win.title("Yardım & Bilgi")
-        info_win.geometry("400x300")
+        info_win.geometry("700x400")
         try:
             info_win.iconphoto(False, self.icon)
         except Exception as e:
             print("Bilgi penceresi için icon yüklenemedi:", e)
-        text_box = tk.Text(info_win, wrap="word", bg="#3c3f41", fg="white")
-        text_box.pack(expand=True, fill="both", padx=5, pady=5)
-        info_text = (
-            "Uygulama çalışmıyorsa:\n\n"
-            "- Doğru ses aygıtlarını seçtiğinizden emin olun.\n"
-            "- 'CABLE INPUT' gibi sanal ses aygıtlarını doğru kurduğunuzu kontrol edin.\n"
-            "- Global hotkey (F6) antivirüs tarafından yanlış algılanabilir.\n\n"
-            "Herhangi bir sorunla karşılaşırsanız, lütfen geri bildirimde bulunun."
-        )
-        text_box.insert("1.0", info_text)
-        text_box.config(state="disabled")
+        text_box = ttk.Label(info_win, text="""
+            Uygulama çalışmıyorsa:\n\n
+            - Doğru ses aygıtlarını seçtiğinizden emin olun.\n
+            - 'CABLE INPUT' gibi sanal ses aygıtlarını doğru kurduğunuzu kontrol edin.\n
+            - Global hotkey (F6) antivirüs tarafından yanlış algılanabilir.\n\n
+            Herhangi bir sorunla karşılaşırsanız, lütfen geri bildirimde bulunun.
+        """)
+        text_box.pack(padx=10, pady=10)
 
     def toggle_processing(self):
         if not self.processor.stream:
@@ -327,12 +364,7 @@ class AudioEffectGUI:
         meter_width = int(self.canvas.winfo_width() * amp)
         meter_width = max(0, min(self.canvas.winfo_width(), meter_width))
         self.canvas.coords(self.meter_rect, 0, 0, meter_width, 150)
-        if amp < 0.3:
-            color = "green"
-        elif amp < 0.7:
-            color = "yellow"
-        else:
-            color = "red"
+        color = "green" if amp < 0.3 else "yellow" if amp < 0.7 else "red"
         self.canvas.itemconfig(self.meter_rect, fill=color)
         self.root.after(50, self.update_volume_meter)
 

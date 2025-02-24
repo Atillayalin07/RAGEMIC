@@ -1,2 +1,15 @@
-README.md
-OKU BENİ.txt
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build ve dağıtım
+build/
+dist/
+*.egg-info/
+
+# IDE ayarları
+.vscode/
+
+# Sistem dosyaları
+.DS_Store
