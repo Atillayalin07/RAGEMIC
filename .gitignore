@@ -4,8 +4,6 @@ __pycache__/
 *$py.class
 
 # Build ve dağıtım
-build/
-dist/
 *.egg-info/
 
 # IDE ayarları
