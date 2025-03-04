@@ -381,7 +381,7 @@ if __name__ == "__main__":
 # Bay Eggex'den not:
 # - Build dosyasında ben zaten buildledim ancak siz yine de buildlemek istiyorsanız aşağıdaki araçları kullanarak yapabilirsiniz:
 #   PyInstaller gibi araçlar kullanabilirsiniz:
-#   > pyinstaller --onefile rage.py
+#   > pyinstaller --onefile --hidden-import=ttkbootstrap.constants --hidden-import=keyboard --hidden-import=pyaudio rage.py
 #
 # - Alternatif olarak, .bat dosyası oluşturarak da yapabilirsiniz.:
 #   @echo off
