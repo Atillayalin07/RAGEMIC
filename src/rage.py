@@ -1,4 +1,26 @@
+#aşağıdaki kod ttkbootstrap suçu
+
+# tek yaptığı şey, ttkbootstrap'un varsayılan dil ayarlarını geçersiz kılmak
+# Bu, ttkbootstrap'un bazı dillerdeki tarih ve saat biçimlendirmelerini bozabilir.
+# Bu kodu kaldırarak, ttkbootstrap'un dil ayarlarını kullanabilirsiniz.
+# ki onuda çözdüm merak etmeyin. Eğer hala hata varsa büyük ihtimalle kulanılan cihazda dil paketi yoktur.
+# 3/15/2025 - BayEggex
+
 import os
+os.environ["LANG"] = "C"
+os.environ["LC_ALL"] = "C"
+
+import locale
+try:
+    locale.setlocale(locale.LC_ALL, locale.setlocale(locale.LC_TIME, ""))
+except locale.Error:
+    try:
+        locale.setlocale(locale.LC_ALL, "C")
+    except:
+        pass
+    
+#Yukarıdaki kod ttkbootstrap suçu
+
 import pyaudio
 import numpy as np
 import ttkbootstrap as ttk
@@ -311,7 +333,7 @@ class AudioEffectGUI:
     def show_info(self):
         info_win = ttk.Toplevel(self.root)
         info_win.title("Yardım & Bilgi")
-        info_win.geometry("700x400")
+        info_win.geometry("700x700")
         try:
             info_win.iconphoto(False, self.icon)
         except Exception as e:
@@ -328,8 +350,14 @@ class AudioEffectGUI:
     def toggle_processing(self):
         if not self.processor.stream:
             try:
-                input_idx = int(self.input_device_var.get().split(':')[0])
-                output_idx = int(self.output_device_var.get().split(':')[0])
+                input_device = self.input_device_var.get()
+                input_idx = int(input_device.split(':')[0]) if ':' in input_device else 0
+                output_device = self.output_device_var.get()
+                output_idx = int(output_device.split(':')[0]) if ':' in output_device else 0
+            except (ValueError, IndexError) as e:
+                self.status_label.config(text=f"Hata: Geçersiz cihaz formatı ({str(e)})")
+                return
+            try:
                 self.processor.start_stream(input_idx, output_idx)
                 self.processor.effects_enabled = True
                 self.status_label.config(text="Durum: Efektler Açık")
@@ -374,8 +402,14 @@ class AudioEffectGUI:
 
 
 if __name__ == "__main__":
-    app = AudioEffectGUI()
-    app.run()
+    try:
+        app = AudioEffectGUI()
+        app.run()
+    except Exception as e:
+        print("Uygulama başlatılamadı bu hata kodu ile @bayeggex'e ulaşın veya Issue açın:", e)
+        input("Çıkmak için ENTER tuşuna basın...")   
+    #app = AudioEffectGUI()
+    #app.run()
 
 # -----------------------------------------------------
 # Bay Eggex'den not:

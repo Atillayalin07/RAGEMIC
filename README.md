@@ -1,7 +1,17 @@
-# RageMic
 
-**RageMic**, VB-Audio Cable ile çalışan, ses efektlerinizi (gain, distorsiyon, klipleme) anlık olarak uygulayan, modern arayüzlü bir ses işleme uygulamasıdır.  
-Bu proje, orijinal versiyona atıfta bulunarak geliştirilmiş, pull request gönderilmiş ve yeni özelliklerle (preset ayarları, global hotkey, ses seviyesi göstergesi, ayarların JSON dosyasıyla saklanması vb.) zenginleştirilmiş bir kopyadır.
+<div align="center">
+
+# RAGEMIC <br> 🎤🎙️
+
+
+<img alt="RageMic Logo" src="https://img.shields.io/badge/RageMic-gerçek zamanlı ses efektleri uygulaması-red">
+<img alt="Python" src="https://img.shields.io/badge/python-3.6+-blue">
+<img alt="License" src="https://img.shields.io/badge/license-MIT-green">
+
+</div>
+
+RageMic, gerçek zamanlı ses efektleri uygulaması olup, mikrofonunuza gain (ses seviyesi), distorsiyon (bozulma) ve klipleme (ses kesimi) gibi efektler ekleyerek sesinizi “öfke” moduna dönüştürmenizi sağlar.Bu uygulama, [VB AUDIO CABLE](https://vb-audio.com/Cable/index.htm) ile entegre çalışarak, başka uygulamalarda (Discord vb.) “CABLE OUTPUT” üzerinden dönüştürülmüş sesi duyurmanıza imkân tanır.
+
 
 ## ÇALIŞTIRMA ADIMLARI
 
@@ -28,13 +38,12 @@ Bu versiyon, orijinal projeye göre birçok iyileştirme ve ek özellik sunmakta
 - **Global Hotkey Desteği:** F12 tuşuyla kolayca efektleri açıp kapatabilirsiniz.
 - **Ses Seviyesi Göstergesi:** Gerçek zamanlı olarak ses seviyesini görsel olarak takip edebilirsiniz.
 - **Ayarların Kalıcı Kaydı:** Hem preset ayarları hem de ses aygıtı seçimleri, JSON dosyaları ile aynı klasörde saklanır. Böylece program yeniden açıldığında önceki ayarlar otomatik olarak yüklenir.
-- **Build Dosyaları:** Benim buildlediğim versiyon, `build/` ve `dist/` klasörlerinde yer almaktadır.
 
 ## ORİJİNAL VERSİYON ÜZERİNE GELİŞTİRİLMİŞTİR
 
 Bu proje, [orijinal](https://github.com/goblinhanyikan/RAGEMIC) versiyona atıfta bulunarak geliştirilmiştir.  
 - **Pull Request:** Orijinal projeye yönelik gönderdiğim pull request ile ek özellikler, hata düzeltmeleri ve modernizasyon sağlanmıştır.
-- **Geliştirilmiş Özellikler:** Yukarıda belirtilen ek özellikler sayesinde, kullanıcı deneyimi ve işlevsellik önemli ölçüde artırılmıştır.
+- **Geliştirilmiş Özellikler:** Ek özellikler (modern arayüz, preset desteği, JSON kayıt, vb.) ve hata düzeltmeleri ile kullanıcı deneyimi iyileştirilmiştir.
 
 ## YÜKLEME VE ÇALIŞTIRMA
 
@@ -58,15 +67,40 @@ Bu proje, [orijinal](https://github.com/goblinhanyikan/RAGEMIC) versiyona atıft
 ## BUILD DOSYALARI
 
 - **Build Dosyaları:**  
-  Build ve derleme dosyaları `build/` ve `dist/` klasörlerinde yer almaktadır.  
-  Bu klasörler, proje kök dizininde yer alır ve `.gitignore` dosyası ile takip dışı bırakılmıştır.
+  - Bu proje herhangi bir resmî lisansa tabii olabilir veya        olmayabilir (orijinal repoya bakınız).
+  - VB-Audio Cable gibi üçüncü taraf yazılımlarla ilgili sorunlar için ilgili yazılımın geliştiricilerine başvurunuz.
 
-## SON NOTLAR
+## OLASI HATALAR VE ÇÖZÜMLERİ
+- **Projeye Güven duygusu**  
+   - projeye veya benim geliştirdiğim build'e güvenmiyorsanız siz rage.py üzerinden kendinizde buildleyebilirisiniz. bu işlevleri requirements.txt'de bulunan tüm kütüphaneleri indirip daha sonrasında ise 
+   ```bash
+   pyinstaller --onefile --hidden-import=ttkbootstrap.constants --hidden-import=keyboard --hidden-import=pyaudio rage.py
+   ```
+   yapmanız yeterli olacaktır.
 
-RageMic, orijinal projeye göre geliştirilmiş, pull request ile ek özellikler eklenmiş ve tamamen güncellenmiş bir versiyondur.  
-Projeye katkıda bulunmak veya geri bildirimde bulunmak isterseniz, lütfen pull request açın ya da issue bildirimi yapın.  
-Keyifli kullanımlar!
+- **locale.Error: unsupported locale setting**
+  - bu sorun 1.0.2 ile çözüldü ancak yinede bazen olabiliyor.
+  - Bazı sistemlerde, locale ayarları desteklenmeyebilir.
+  - dialogs.py içindeki locale.setlocale satırını try/except ile yakalayın veya 
+  ```py
+     os.environ["LC_ALL"] = "C"
+  ``` 
+  - şeklinde ayarlayın.
+  - dialogs.py ttkinter'in içinde lib'lerde
+- **pyaudio Kurulumu Sırasında Hata:**
+  - Windows’ta Visual C++ Build Tools eksikse pip install pyaudio hata verebilir.
+  - [Resmi Microsoft Build Tools](https://visualstudio.microsoft.com/downloads/) veya önceden derlenmiş “whl” dosyası yükleyin.
+- **Device not found Hatası:**
+  - Mikrofon veya sanal cihaz “CABLE INPUT” / “CABLE OUTPUT” algılanmadıysa.
+  - Ses aygıtlarını kontrol edin, yeniden takın veya VB-Audio Cable’ın kurulu olduğundan emin olun. Ve tekrar deneyin.
+
+## İLETİŞİM
+- Orjinal geliştirici: [RAGEMIC](https://github.com/goblinhanyikan/RAGEMIC)
+- Orjinal Sürüm sahibi:[Goblinhanyikan](https://github.com/goblinhanyikan/RAGEMIC)
+- Proje Sahibi: [Bay Eggex](https://github.com/bayeggex)
+- Geliştirilmiş Sürüm: [Bu repo](https://github.com/bayeggex/RAGEMIC)
+- Soru ve öneriler için GitHub Issues üzerinden iletişime geçebilirsiniz.
 
 ---
 
-**Uyarı:** Programı kullanırken oluşabilecek herhangi bir sorumluluk tamamen kullanıcıya aittir.
+**Keyifli Kulanımlar!:** Bu rehberi izleyerek RageMic’i sorunsuz şekilde kurabilir, kendi öfkeli ses efektlerinizi anında deneyimleyebilirsiniz.
