@@ -1,0 +1,18 @@
+bu projede en güncel versiyon en önemlisidir. 1.0.3 versiyonu en güncel versiyondur.
+
+Eğer kod çalışmıyorsa : https://github.com/bayeggex/RAGEMIC
+adresinden Release değil, kendisini indirmenizi öneririm.
+
+Eğer yine çalışmıyor ise programı kendiniz buildleyin bunuda şu adımlar ile yapabilirsiniz ;
+
+1. projeyi https://github.com/bayeggex/RAGEMIC'den indirin
+2. python 3.x.x sürümünü indirin
+3. doyas konumundan src klasörüne girin ve cmd'yi açın
+4. cmd'ye"pip install -r requirements.txt" yazın
+5. Tüm kütüphaneler indirdikten sonra cmd'ye tekrardan "pip install pyinstaller" yazın
+6. cmd'ye "pyinstaller --onefile --hidden-import=ttkbootstrap.constants --hidden-import=keyboard --hidden-import=pyaudio rage.py
+" yazın
+7. cmd'de işlem bittikten sonra dist klasörüne gidin ve orada rage.exe dosyasını bulun
+8. Artık hazır olacak.
+
+ayrıca projeyi tam anlamıyla ben yapmadım bu öğe bir fork'dur orjinal yaratıcısı : https://github.com/goblinhanyikan/RAGEMIC'dir

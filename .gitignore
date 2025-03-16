@@ -1,0 +1,16 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build ve dağıtım
+*.egg-info/
+
+# IDE ayarları
+.vscode/
+.Build/
+.idea/
+.dist/
+
+# Sistem dosyaları
+.DS_Store
