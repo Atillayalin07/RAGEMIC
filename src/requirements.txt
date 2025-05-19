@@ -1,4 +1,3 @@
-pyaudio
 numpy
+pyaudio
 ttkbootstrap
-keyboard

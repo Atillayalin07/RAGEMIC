@@ -1,0 +1,3 @@
+([('RageMic',
+   '/Users/atillayalinoksuz/Desktop/RAGEMIC-main/src/dist/RageMic',
+   'EXECUTABLE')],)
